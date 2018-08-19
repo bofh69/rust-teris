@@ -1,0 +1,116 @@
+extern crate rand;
+extern crate pancurses;
+
+use pancurses::Window;
+
+mod model;
+mod view;
+
+use model::PieceFactory;
+use model::Board;
+use model::Game;
+
+fn left(g: &mut Game) {
+    if g.pos.0 > 0 {
+        g.clear();
+        g.pos.0 = g.pos.0 - 1;
+        if !g.fits() {
+            g.pos.0 = g.pos.0 + 1;
+        }
+        g.draw();
+    }
+}
+
+fn right(g: &mut Game) {
+    if g.pos.0 < g.board.width() as i8 - 1 {
+        g.clear();
+        g.pos.0 = g.pos.0 + 1;
+        if !g.fits() {
+            g.pos.0 = g.pos.0 - 1;
+        }
+        g.draw();
+    }
+}
+
+fn up(g: &mut Game) {
+    g.clear();
+    g.turn_piece();
+    if !g.fits() {
+        g.counter_turn_piece();
+    }
+    g.draw();
+}
+
+fn down(g: &mut Game) {
+    g.clear();
+    g.pos.1 += 1;
+    if !g.fits() {
+        g.pos.1 -= 1;
+        g.draw();
+        // FIXME:
+        g.piece_stuck();
+    }
+    g.draw();
+}
+
+fn fall(g: &mut Game) {
+    g.clear();
+    while g.fits() {
+        g.pos.1 += 1;
+    }
+    g.pos.1 -= 1;
+    g.draw();
+    // FIXME:
+    g.piece_stuck();
+    g.draw();
+}
+
+fn game_loop(win: &Window, g: &mut Game) {
+    use std::{thread, time};
+
+    g.draw();
+    let mut now = time::Instant::now();
+    loop {
+        match win.getch() {
+            Some(pancurses::Input::Character(c)) => {
+                match c {
+                    'q' => return,
+                    'h' => left(g),
+                    'l' => right(g),
+                    'k' => up(g),
+                    'j' => {now = time::Instant::now(); down(g)},
+                    ' ' => {now = time::Instant::now(); fall(g)},
+                    _ => (),
+                }
+            }
+            Some(_) => (),
+            None => {
+                thread::sleep(time::Duration::from_millis(5));
+
+                if now.elapsed() > time::Duration::from_millis(200) {
+                    now = time::Instant::now();
+                    down(g)
+                }
+            }
+        }
+        view::draw_in_win(g, win);
+    }
+}
+
+/// The entry point.
+fn main() {
+    println!("Hello, world!");
+    let win = view::init();
+
+    let piece_factory = PieceFactory::new();
+    let b = Board::new(10, 20);
+    let mut game = Game::new(b, piece_factory);
+    win.nodelay(true);
+
+    game_loop(&win, &mut game);
+
+    view::end();
+}
+
+#[cfg(test)]
+mod tests {}

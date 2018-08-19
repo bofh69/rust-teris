@@ -1,0 +1,8 @@
+[package]
+name = "tetris"
+version = "0.1.0"
+authors = ["Sebastian Andersson <sebastian@bittr.nu>"]
+
+[dependencies]
+rand = "0.3.*"
+pancurses = "0.8.*"
