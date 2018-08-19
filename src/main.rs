@@ -1,14 +1,14 @@
-extern crate rand;
 extern crate pancurses;
+extern crate rand;
 
 use pancurses::Window;
 
 mod model;
 mod view;
 
-use model::PieceFactory;
 use model::Board;
 use model::Game;
+use model::PieceFactory;
 
 fn left(g: &mut Game) {
     if g.pos.0 > 0 {
@@ -72,17 +72,21 @@ fn game_loop(win: &Window, g: &mut Game) {
     let mut now = time::Instant::now();
     loop {
         match win.getch() {
-            Some(pancurses::Input::Character(c)) => {
-                match c {
-                    'q' => return,
-                    'h' => left(g),
-                    'l' => right(g),
-                    'k' => up(g),
-                    'j' => {now = time::Instant::now(); down(g)},
-                    ' ' => {now = time::Instant::now(); fall(g)},
-                    _ => (),
+            Some(pancurses::Input::Character(c)) => match c {
+                'q' => return,
+                'h' => left(g),
+                'l' => right(g),
+                'k' => up(g),
+                'j' => {
+                    now = time::Instant::now();
+                    down(g)
                 }
-            }
+                ' ' => {
+                    now = time::Instant::now();
+                    fall(g)
+                }
+                _ => (),
+            },
             Some(_) => (),
             None => {
                 thread::sleep(time::Duration::from_millis(5));

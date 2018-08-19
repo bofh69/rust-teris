@@ -61,7 +61,6 @@ pub enum PieceType {
     Z,
 }
 
-
 #[derive(Clone)]
 pub struct Piece {
     tetraminos: Vec<Tetramino>,
@@ -83,7 +82,9 @@ impl Piece {
     }
 
     pub fn curr(&self) -> Tetramino {
-        Tetramino { ..self.tetraminos[self.index as usize] }
+        Tetramino {
+            ..self.tetraminos[self.index as usize]
+        }
     }
 
     pub fn next(&mut self) {
@@ -260,32 +261,58 @@ impl Board {
     }
 }
 
-
 fn get_pieces() -> Vec<Piece> {
     let o = Piece::new(vec![Tetramino::new("XX..XX..", 1, 1)], PieceType::O);
 
-    let i = Piece::new(vec![Tetramino::new("XXXX", 2, 0), Tetramino::new("X...X...X...X", 0, 2)],
-                       PieceType::I);
-    let s = Piece::new(vec![Tetramino::new("XX...XX", 1, 1), Tetramino::new(".X..XX..X", 1, 1)],
-                       PieceType::S);
-    let z = Piece::new(vec![Tetramino::new(".XX.XX", 1, 1), Tetramino::new("X...XX...X", 1, 1)],
-                       PieceType::Z);
+    let i = Piece::new(
+        vec![
+            Tetramino::new("XXXX", 2, 0),
+            Tetramino::new("X...X...X...X", 0, 2),
+        ],
+        PieceType::I,
+    );
+    let s = Piece::new(
+        vec![
+            Tetramino::new("XX...XX", 1, 1),
+            Tetramino::new(".X..XX..X", 1, 1),
+        ],
+        PieceType::S,
+    );
+    let z = Piece::new(
+        vec![
+            Tetramino::new(".XX.XX", 1, 1),
+            Tetramino::new("X...XX...X", 1, 1),
+        ],
+        PieceType::Z,
+    );
 
-    let t = Piece::new(vec![Tetramino::new("XXX..X..", 1, 1),
-                            Tetramino::new(".X..XX...X", 1, 1),
-                            Tetramino::new(".X..XXX", 1, 1),
-                            Tetramino::new("X...XX..X", 1, 1)],
-                       PieceType::T);
-    let l = Piece::new(vec![Tetramino::new("X...X...XX", 1, 1),
-                            Tetramino::new("XXX.X", 1, 1),
-                            Tetramino::new("XX...X...X", 1, 1),
-                            Tetramino::new("..X.XXX", 1, 1)],
-                       PieceType::L);
-    let j = Piece::new(vec![Tetramino::new(".X...X..XX", 1, 1),
-                            Tetramino::new("X...XXX", 1, 1),
-                            Tetramino::new("XX..X...X", 1, 1),
-                            Tetramino::new("XXX...X", 1, 1)],
-                       PieceType::J);
+    let t = Piece::new(
+        vec![
+            Tetramino::new("XXX..X..", 1, 1),
+            Tetramino::new(".X..XX...X", 1, 1),
+            Tetramino::new(".X..XXX", 1, 1),
+            Tetramino::new("X...XX..X", 1, 1),
+        ],
+        PieceType::T,
+    );
+    let l = Piece::new(
+        vec![
+            Tetramino::new("X...X...XX", 1, 1),
+            Tetramino::new("XXX.X", 1, 1),
+            Tetramino::new("XX...X...X", 1, 1),
+            Tetramino::new("..X.XXX", 1, 1),
+        ],
+        PieceType::L,
+    );
+    let j = Piece::new(
+        vec![
+            Tetramino::new(".X...X..XX", 1, 1),
+            Tetramino::new("X...XXX", 1, 1),
+            Tetramino::new("XX..X...X", 1, 1),
+            Tetramino::new("XXX...X", 1, 1),
+        ],
+        PieceType::J,
+    );
     vec![o, i, s, z, t, l, j]
 }
 
@@ -295,7 +322,9 @@ pub struct PieceFactory {
 
 impl PieceFactory {
     pub fn new() -> PieceFactory {
-        PieceFactory { pieces: get_pieces() }
+        PieceFactory {
+            pieces: get_pieces(),
+        }
     }
 
     pub fn next(&self) -> Piece {
@@ -358,16 +387,19 @@ impl Game {
         self.lines += v.len() as u16;
         self.piece = self.next_piece.clone();
         self.next_piece = self.piece_factory.next();
-        self.pos = (self.board.width() as i8 / 2 as i8, self.piece.curr().offset.1);
+        self.pos = (
+            self.board.width() as i8 / 2 as i8,
+            self.piece.curr().offset.1,
+        );
         v
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use model::Board;
     use model::Piece;
     use model::Tetramino;
-    use model::Board;
 
     fn get_i_piece() -> Piece {
         let p = ::model::get_pieces();

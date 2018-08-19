@@ -1,8 +1,8 @@
 extern crate pancurses;
 
-use pancurses::Window;
 use model::Game;
 use model::PieceType;
+use pancurses::Window;
 
 /// Inits the curses.
 pub fn init() -> Window {
@@ -37,7 +37,6 @@ pub fn init() -> Window {
 
 // Move to different place.
 pub fn draw_in_win(g: &Game, win: &Window) {
-
     fn set_color(win: &Window, c: &PieceType) {
         let cp = match c {
             &PieceType::None => 0,
