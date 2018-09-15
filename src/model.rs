@@ -88,7 +88,7 @@ impl Piece {
     }
 
     pub fn next(&mut self) {
-        self.index = self.index + 1;
+        self.index += 1;
         if self.index as usize >= self.tetraminos.len() {
             self.index = 0;
         }
@@ -118,13 +118,13 @@ impl Board {
     // FIXME: Change to an iterator?
     fn get_indexes(&self, p: &Piece, x: i8, y: i8) -> Vec<usize> {
         let mut v = vec![];
-        let c = p.curr();
+        let curr = p.curr();
         let width = self.width() as usize;
-        let x = x as usize - c.offset.0 as usize;
-        let y = y as usize - c.offset.1 as usize;
-        for y1 in 0..c.height() {
-            for x1 in 0..c.width() {
-                if c.is_set(x1 as i8, y1 as i8) {
+        let x = x as usize - curr.offset.0 as usize;
+        let y = y as usize - curr.offset.1 as usize;
+        for y1 in 0..curr.height() {
+            for x1 in 0..curr.width() {
+                if curr.is_set(x1 as i8, y1 as i8) {
                     let x2 = x1 as usize + x;
                     let y2 = y1 as usize + y;
                     v.push(x2 + y2 * width);
@@ -262,58 +262,57 @@ impl Board {
 }
 
 fn get_pieces() -> Vec<Piece> {
-    let o = Piece::new(vec![Tetramino::new("XX..XX..", 1, 1)], PieceType::O);
-
-    let i = Piece::new(
-        vec![
-            Tetramino::new("XXXX", 2, 0),
-            Tetramino::new("X...X...X...X", 0, 2),
-        ],
-        PieceType::I,
-    );
-    let s = Piece::new(
-        vec![
-            Tetramino::new("XX...XX", 1, 1),
-            Tetramino::new(".X..XX..X", 1, 1),
-        ],
-        PieceType::S,
-    );
-    let z = Piece::new(
-        vec![
-            Tetramino::new(".XX.XX", 1, 1),
-            Tetramino::new("X...XX...X", 1, 1),
-        ],
-        PieceType::Z,
-    );
-
-    let t = Piece::new(
-        vec![
-            Tetramino::new("XXX..X..", 1, 1),
-            Tetramino::new(".X..XX...X", 1, 1),
-            Tetramino::new(".X..XXX", 1, 1),
-            Tetramino::new("X...XX..X", 1, 1),
-        ],
-        PieceType::T,
-    );
-    let l = Piece::new(
-        vec![
-            Tetramino::new("X...X...XX", 1, 1),
-            Tetramino::new("XXX.X", 1, 1),
-            Tetramino::new("XX...X...X", 1, 1),
-            Tetramino::new("..X.XXX", 1, 1),
-        ],
-        PieceType::L,
-    );
-    let j = Piece::new(
-        vec![
-            Tetramino::new(".X...X..XX", 1, 1),
-            Tetramino::new("X...XXX", 1, 1),
-            Tetramino::new("XX..X...X", 1, 1),
-            Tetramino::new("XXX...X", 1, 1),
-        ],
-        PieceType::J,
-    );
-    vec![o, i, s, z, t, l, j]
+    vec![
+        Piece::new(vec![Tetramino::new("XX..XX..", 1, 1)], PieceType::O),
+        Piece::new(
+            vec![
+                Tetramino::new("XXXX", 2, 0),
+                Tetramino::new("X...X...X...X", 0, 2),
+            ],
+            PieceType::I,
+        ),
+        Piece::new(
+            vec![
+                Tetramino::new("XX...XX", 1, 1),
+                Tetramino::new(".X..XX..X", 1, 1),
+            ],
+            PieceType::S,
+        ),
+        Piece::new(
+            vec![
+                Tetramino::new(".XX.XX", 1, 1),
+                Tetramino::new("X...XX...X", 1, 1),
+            ],
+            PieceType::Z,
+        ),
+        Piece::new(
+            vec![
+                Tetramino::new("XXX..X..", 1, 1),
+                Tetramino::new(".X..XX...X", 1, 1),
+                Tetramino::new(".X..XXX", 1, 1),
+                Tetramino::new("X...XX..X", 1, 1),
+            ],
+            PieceType::T,
+        ),
+        Piece::new(
+            vec![
+                Tetramino::new("X...X...XX", 1, 1),
+                Tetramino::new("XXX.X", 1, 1),
+                Tetramino::new("XX...X...X", 1, 1),
+                Tetramino::new("..X.XXX", 1, 1),
+            ],
+            PieceType::L,
+        ),
+        Piece::new(
+            vec![
+                Tetramino::new(".X...X..XX", 1, 1),
+                Tetramino::new("X...XXX", 1, 1),
+                Tetramino::new("XX..X...X", 1, 1),
+                Tetramino::new("XXX...X", 1, 1),
+            ],
+            PieceType::J,
+        ),
+    ]
 }
 
 pub struct PieceFactory {
@@ -351,10 +350,10 @@ impl Game {
         let p = piece_factory.next();
         let h = p.curr().offset.1;
         Game {
-            board: board,
+            board,
             piece: p,
             next_piece: piece_factory.next(),
-            piece_factory: piece_factory,
+            piece_factory,
             score: 0,
             lines: 0,
             pos: (w / 2, h),

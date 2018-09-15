@@ -38,22 +38,22 @@ pub fn init() -> Window {
 // Move to different place.
 pub fn draw_in_win(g: &Game, win: &Window) {
     fn set_color(win: &Window, c: &PieceType) {
-        let cp = match c {
-            &PieceType::None => 0,
-            &PieceType::I => 1,
-            &PieceType::J => 2,
-            &PieceType::L => 3,
-            &PieceType::O => 4,
-            &PieceType::S => 5,
-            &PieceType::T => 6,
-            &PieceType::Z => 7,
+        let cp = match *c {
+            PieceType::None => 0,
+            PieceType::I => 1,
+            PieceType::J => 2,
+            PieceType::L => 3,
+            PieceType::O => 4,
+            PieceType::S => 5,
+            PieceType::T => 6,
+            PieceType::Z => 7,
         };
         win.color_set(cp);
     }
 
     let width = g.board.width() as usize;
     for y in 0..g.board.height() {
-        win.mv(y as i32, 0);
+        win.mv(i32::from(y), 0);
         for x in 0..width {
             let o = match g.board.map[x + y as usize * width].clone() {
                 PieceType::None => {

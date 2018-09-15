@@ -13,9 +13,9 @@ use model::PieceFactory;
 fn left(g: &mut Game) {
     if g.pos.0 > 0 {
         g.clear();
-        g.pos.0 = g.pos.0 - 1;
+        g.pos.0 -= 1;
         if !g.fits() {
-            g.pos.0 = g.pos.0 + 1;
+            g.pos.0 += 1;
         }
         g.draw();
     }
@@ -24,9 +24,9 @@ fn left(g: &mut Game) {
 fn right(g: &mut Game) {
     if g.pos.0 < g.board.width() as i8 - 1 {
         g.clear();
-        g.pos.0 = g.pos.0 + 1;
+        g.pos.0 += 1;
         if !g.fits() {
-            g.pos.0 = g.pos.0 - 1;
+            g.pos.0 -= 1;
         }
         g.draw();
     }
