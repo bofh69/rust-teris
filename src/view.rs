@@ -1,7 +1,7 @@
 extern crate pancurses;
 
-use model::Game;
-use model::PieceType;
+use crate::model::Game;
+use crate::model::PieceType;
 use pancurses::Window;
 
 /// Inits the curses.

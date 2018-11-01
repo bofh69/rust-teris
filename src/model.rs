@@ -396,12 +396,12 @@ impl Game {
 
 #[cfg(test)]
 mod tests {
-    use model::Board;
-    use model::Piece;
-    use model::Tetramino;
+    use crate::model::Board;
+    use crate::model::Piece;
+    use crate::model::Tetramino;
 
     fn get_i_piece() -> Piece {
-        let p = ::model::get_pieces();
+        let p = crate::model::get_pieces();
         p[1].clone()
         /*
         ::Piece::new(vec![::Tetramino::new("XXXX", 2, 0),
@@ -558,15 +558,15 @@ mod tests {
     #[test]
     fn new_game() {
         let b = Board::new(10, 20);
-        let piece_factory = ::PieceFactory::new();
-        ::Game::new(b, piece_factory);
+        let piece_factory = crate::PieceFactory::new();
+        crate::Game::new(b, piece_factory);
     }
 
     #[test]
     fn piece_is_stuck() {
         let b = Board::new(10, 10);
-        let piece_factory = ::PieceFactory::new();
-        let mut g = ::Game::new(b, piece_factory);
+        let piece_factory = crate::PieceFactory::new();
+        let mut g = crate::Game::new(b, piece_factory);
 
         add_full_lines(&mut g.board);
 

@@ -6,9 +6,9 @@ use pancurses::Window;
 mod model;
 mod view;
 
-use model::Board;
-use model::Game;
-use model::PieceFactory;
+use self::model::Board;
+use self::model::Game;
+use self::model::PieceFactory;
 
 fn left(g: &mut Game) {
     if g.pos.0 > 0 {
