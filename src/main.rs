@@ -103,11 +103,13 @@ fn game_loop(win: &Window, g: &mut Game) {
 
 /// The entry point.
 fn main() {
+    const WIDTH : u8 = 10;
+    const HEIGHT : u8 = 20;
     println!("Hello, world!");
-    let win = view::init();
+    let win = view::init(WIDTH, HEIGHT);
 
     let piece_factory = PieceFactory::new();
-    let b = Board::new(10, 20);
+    let b = Board::new(WIDTH, HEIGHT);
     let mut game = Game::new(b, piece_factory);
     win.nodelay(true);
 

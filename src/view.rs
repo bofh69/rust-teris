@@ -4,14 +4,11 @@ use crate::model::Game;
 use crate::model::PieceType;
 use pancurses::Window;
 
-/// Inits the curses.
-pub fn init() -> Window {
-    let win = pancurses::initscr();
-    win.nodelay(true);
-    win.scrollok(false);
-    pancurses::cbreak();
-    pancurses::noecho();
+const OFFSET_X: u8 = 2;
+const OFFSET_Y: u8 = 2;
 
+fn init_colours()
+{
     pancurses::start_color();
 
     pancurses::init_pair(0, pancurses::COLOR_WHITE, pancurses::COLOR_BLACK);
@@ -30,7 +27,45 @@ pub fn init() -> Window {
     // Z RED
     pancurses::init_pair(7, pancurses::COLOR_RED, pancurses::COLOR_RED);
 
-    // FIXME: Draw the game-board here?
+    // Board decoration colour
+    pancurses::init_pair(8, pancurses::COLOR_YELLOW, pancurses::COLOR_BLACK);
+}
+
+fn draw_board_decoration(win: &Window, width: u8, height: u8)
+{
+    win.color_set(8);
+    for y in (OFFSET_Y) .. (OFFSET_Y + height) {
+        win.mv(i32::from(y), i32::from(OFFSET_X-1));
+        win.addch('|');
+        win.mv(i32::from(y), i32::from(OFFSET_X + width*2));
+        win.addch('|');
+    }
+    for x in (OFFSET_X) .. (OFFSET_X + width*2) {
+        win.mv(i32::from(OFFSET_Y - 1), i32::from(x));
+        win.addch('-');
+        win.mv(i32::from(OFFSET_Y + height), i32::from(x));
+        win.addch('-');
+    }
+    win.mv(i32::from(OFFSET_Y-1), i32::from(OFFSET_X-1));
+    win.addch('+');
+    win.mv(i32::from(OFFSET_Y-1), i32::from(OFFSET_X+width*2));
+    win.addch('+');
+    win.mv(i32::from(OFFSET_Y+height), i32::from(OFFSET_X-1));
+    win.addch('+');
+    win.mv(i32::from(OFFSET_Y+height), i32::from(OFFSET_X+width*2));
+    win.addch('+');
+}
+
+/// Inits the curses.
+pub fn init(width:u8, height:u8) -> Window {
+    let win = pancurses::initscr();
+    win.nodelay(true);
+    win.scrollok(false);
+    pancurses::cbreak();
+    pancurses::noecho();
+
+    init_colours();
+    draw_board_decoration(&win, width, height);
 
     win
 }
@@ -53,7 +88,7 @@ pub fn draw_in_win(g: &Game, win: &Window) {
 
     let width = g.board.width() as usize;
     for y in 0..g.board.height() {
-        win.mv(i32::from(y), 0);
+        win.mv(i32::from(y + OFFSET_Y), i32::from(OFFSET_X));
         for x in 0..width {
             let o = match g.board.map[x + y as usize * width].clone() {
                 PieceType::None => {
