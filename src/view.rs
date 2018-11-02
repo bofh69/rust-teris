@@ -7,8 +7,20 @@ use pancurses::Window;
 const OFFSET_X: u8 = 2;
 const OFFSET_Y: u8 = 2;
 
-fn init_colours()
-{
+const LINES_OFFSET_X: u8 = 1;
+const LINES_OFFSET_Y: u8 = 1;
+const LINES_WIDTH: u8 = 5;
+
+const SCORE_OFFSET_X: u8 = 1;
+const SCORE_OFFSET_Y: u8 = 3;
+const SCORE_WIDTH: u8 = 5;
+
+const PIECE_OFFSET_X: u8 = 1;
+const PIECE_OFFSET_Y: u8 = 5;
+const PIECE_WIDTH: u8 = 5;
+const PIECE_HEIGHT: u8 = 5;
+
+fn init_colours() {
     pancurses::start_color();
 
     pancurses::init_pair(0, pancurses::COLOR_WHITE, pancurses::COLOR_BLACK);
@@ -31,43 +43,105 @@ fn init_colours()
     pancurses::init_pair(8, pancurses::COLOR_YELLOW, pancurses::COLOR_BLACK);
 }
 
-fn draw_board_decoration(win: &Window, width: u8, height: u8)
-{
+fn draw_board_decoration(win: &Window, width: u8, height: u8) {
     win.color_set(8);
-    for y in (OFFSET_Y) .. (OFFSET_Y + height) {
-        win.mv(i32::from(y), i32::from(OFFSET_X-1));
-        win.addch('|');
-        win.mv(i32::from(y), i32::from(OFFSET_X + width*2));
-        win.addch('|');
+    for y in (OFFSET_Y)..(OFFSET_Y + height) {
+        win.mvaddch(i32::from(y), i32::from(OFFSET_X - 1), '|');
+        win.mvaddch(i32::from(y), i32::from(OFFSET_X + width * 2), '|');
     }
-    for x in (OFFSET_X) .. (OFFSET_X + width*2) {
-        win.mv(i32::from(OFFSET_Y - 1), i32::from(x));
-        win.addch('-');
-        win.mv(i32::from(OFFSET_Y + height), i32::from(x));
-        win.addch('-');
+    for x in (OFFSET_X)..(OFFSET_X + width * 2) {
+        win.mvaddch(i32::from(OFFSET_Y - 1), i32::from(x), '-');
+        win.mvaddch(i32::from(OFFSET_Y + height), i32::from(x), '-');
     }
-    win.mv(i32::from(OFFSET_Y-1), i32::from(OFFSET_X-1));
-    win.addch('+');
-    win.mv(i32::from(OFFSET_Y-1), i32::from(OFFSET_X+width*2));
-    win.addch('+');
-    win.mv(i32::from(OFFSET_Y+height), i32::from(OFFSET_X-1));
-    win.addch('+');
-    win.mv(i32::from(OFFSET_Y+height), i32::from(OFFSET_X+width*2));
-    win.addch('+');
+    win.mvaddch(i32::from(OFFSET_Y - 1), i32::from(OFFSET_X - 1), '+');
+    win.mvaddch(
+        i32::from(OFFSET_Y - 1),
+        i32::from(OFFSET_X + width * 2),
+        '+',
+    );
+    win.mvaddch(i32::from(OFFSET_Y + height), i32::from(OFFSET_X - 1), '+');
+    win.mvaddch(
+        i32::from(OFFSET_Y + height),
+        i32::from(OFFSET_X + width * 2),
+        '+',
+    );
+
+    win.mv(
+        i32::from(OFFSET_Y + LINES_OFFSET_Y),
+        i32::from(OFFSET_X + width * 2 + LINES_OFFSET_X - 1),
+    );
+    win.addstr("+------+");
+
+    win.mvaddch(
+        i32::from(OFFSET_Y + LINES_OFFSET_Y + 1),
+        i32::from(OFFSET_X + width * 2 + LINES_OFFSET_X + LINES_WIDTH + 1),
+        '|',
+    );
+
+    win.mv(
+        i32::from(OFFSET_Y + SCORE_OFFSET_Y),
+        i32::from(OFFSET_X + width * 2 + SCORE_OFFSET_X - 1),
+    );
+    win.addstr("+------+");
+
+    win.mvaddch(
+        i32::from(OFFSET_Y + SCORE_OFFSET_Y + 1),
+        i32::from(OFFSET_X + width * 2 + SCORE_OFFSET_X + SCORE_WIDTH + 1),
+        '|',
+    );
+
+    win.mv(
+        i32::from(OFFSET_Y + SCORE_OFFSET_Y + 2),
+        i32::from(OFFSET_X + width * 2 + SCORE_OFFSET_X - 1),
+    );
+    win.addstr("+------+");
+
+    win.mv(
+        i32::from(OFFSET_Y + PIECE_OFFSET_Y + PIECE_HEIGHT),
+        i32::from(OFFSET_X + width * 2 + PIECE_OFFSET_X - 1),
+    );
+    win.addstr("+------+");
+
+    for y in 1..PIECE_HEIGHT {
+        win.mvaddch(
+            i32::from(OFFSET_Y + PIECE_OFFSET_Y + y),
+            i32::from(OFFSET_X + width * 2 + PIECE_OFFSET_X + PIECE_WIDTH + 1),
+            '|',
+        );
+    }
 }
 
 /// Inits the curses.
-pub fn init(width:u8, height:u8) -> Window {
+pub fn init(width: u8, height: u8) -> Window {
     let win = pancurses::initscr();
     win.nodelay(true);
     win.scrollok(false);
     pancurses::cbreak();
     pancurses::noecho();
+    pancurses::curs_set(0);
 
     init_colours();
     draw_board_decoration(&win, width, height);
 
     win
+}
+
+fn draw_lines(g: &Game, win: &Window, width: u8) {
+    win.mv(
+        i32::from(OFFSET_Y + LINES_OFFSET_Y + 1),
+        i32::from(width * 2u8 + OFFSET_X + LINES_OFFSET_X + 1),
+    );
+    let lines = g.lines.to_string();
+    win.addstr(&lines);
+}
+
+fn draw_score(g: &Game, win: &Window, width: u8) {
+    win.mv(
+        i32::from(OFFSET_Y + SCORE_OFFSET_Y + 1),
+        i32::from(width * 2u8 + OFFSET_X + SCORE_OFFSET_X + 1),
+    );
+    let score = g.score.to_string();
+    win.addstr(&score);
 }
 
 // Move to different place.
@@ -104,6 +178,10 @@ pub fn draw_in_win(g: &Game, win: &Window) {
             win.addch(o);
         }
     }
+
+    win.color_set(8);
+    draw_lines(g, win, width as u8);
+    draw_score(g, win, width as u8);
 }
 
 /// Ends the GUI.

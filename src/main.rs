@@ -103,8 +103,8 @@ fn game_loop(win: &Window, g: &mut Game) {
 
 /// The entry point.
 fn main() {
-    const WIDTH : u8 = 10;
-    const HEIGHT : u8 = 20;
+    const WIDTH: u8 = 10;
+    const HEIGHT: u8 = 20;
     println!("Hello, world!");
     let win = view::init(WIDTH, HEIGHT);
 
