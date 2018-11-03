@@ -384,7 +384,7 @@ impl Game {
     pub fn piece_stuck(&mut self) -> Vec<i8> {
         let v = self.board.remove_full_lines();
         self.lines += v.len() as u16;
-        self.score += (v.len() * v.len()) as u32;
+        self.score += 1 + 10*((v.len() * v.len()) as u32);
         self.piece = self.next_piece.clone();
         self.next_piece = self.piece_factory.next();
         self.pos = (
