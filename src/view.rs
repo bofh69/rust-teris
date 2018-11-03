@@ -2,6 +2,7 @@ extern crate pancurses;
 
 use crate::model::Game;
 use crate::model::PieceType;
+use crate::model::Board;
 use pancurses::Window;
 
 const OFFSET_X: u8 = 2;
@@ -9,15 +10,15 @@ const OFFSET_Y: u8 = 2;
 
 const LINES_OFFSET_X: u8 = 1;
 const LINES_OFFSET_Y: u8 = 1;
-const LINES_WIDTH: u8 = 5;
+const LINES_WIDTH: u8 = 7;
 
 const SCORE_OFFSET_X: u8 = 1;
 const SCORE_OFFSET_Y: u8 = 3;
-const SCORE_WIDTH: u8 = 5;
+const SCORE_WIDTH: u8 = 7;
 
 const PIECE_OFFSET_X: u8 = 1;
 const PIECE_OFFSET_Y: u8 = 5;
-const PIECE_WIDTH: u8 = 5;
+const PIECE_WIDTH: u8 = 7;
 const PIECE_HEIGHT: u8 = 5;
 
 fn init_colours() {
@@ -41,6 +42,12 @@ fn init_colours() {
 
     // Board decoration colour
     pancurses::init_pair(8, pancurses::COLOR_YELLOW, pancurses::COLOR_BLACK);
+}
+
+fn add_line(win: &Window)
+{
+    // Should really use a width parameter.
+    win.addstr("+--------+");
 }
 
 fn draw_board_decoration(win: &Window, width: u8, height: u8) {
@@ -70,7 +77,7 @@ fn draw_board_decoration(win: &Window, width: u8, height: u8) {
         i32::from(OFFSET_Y + LINES_OFFSET_Y),
         i32::from(OFFSET_X + width * 2 + LINES_OFFSET_X - 1),
     );
-    win.addstr("+------+");
+    add_line(win);
 
     win.mvaddch(
         i32::from(OFFSET_Y + LINES_OFFSET_Y + 1),
@@ -82,7 +89,7 @@ fn draw_board_decoration(win: &Window, width: u8, height: u8) {
         i32::from(OFFSET_Y + SCORE_OFFSET_Y),
         i32::from(OFFSET_X + width * 2 + SCORE_OFFSET_X - 1),
     );
-    win.addstr("+------+");
+    add_line(win);
 
     win.mvaddch(
         i32::from(OFFSET_Y + SCORE_OFFSET_Y + 1),
@@ -94,13 +101,13 @@ fn draw_board_decoration(win: &Window, width: u8, height: u8) {
         i32::from(OFFSET_Y + SCORE_OFFSET_Y + 2),
         i32::from(OFFSET_X + width * 2 + SCORE_OFFSET_X - 1),
     );
-    win.addstr("+------+");
+    add_line(win);
 
     win.mv(
         i32::from(OFFSET_Y + PIECE_OFFSET_Y + PIECE_HEIGHT),
         i32::from(OFFSET_X + width * 2 + PIECE_OFFSET_X - 1),
     );
-    win.addstr("+------+");
+    add_line(win);
 
     for y in 1..PIECE_HEIGHT {
         win.mvaddch(
@@ -144,27 +151,27 @@ fn draw_score(g: &Game, win: &Window, width: u8) {
     win.addstr(&score);
 }
 
-// Move to different place.
-pub fn draw_in_win(g: &Game, win: &Window) {
-    fn set_color(win: &Window, c: &PieceType) {
-        let cp = match *c {
-            PieceType::None => 0,
-            PieceType::I => 1,
-            PieceType::J => 2,
-            PieceType::L => 3,
-            PieceType::O => 4,
-            PieceType::S => 5,
-            PieceType::T => 6,
-            PieceType::Z => 7,
-        };
-        win.color_set(cp);
-    }
+fn set_color(win: &Window, c: &PieceType) {
+    let cp = match *c {
+        PieceType::None => 0,
+        PieceType::I => 1,
+        PieceType::J => 2,
+        PieceType::L => 3,
+        PieceType::O => 4,
+        PieceType::S => 5,
+        PieceType::T => 6,
+        PieceType::Z => 7,
+    };
+    win.color_set(cp);
+}
 
-    let width = g.board.width() as usize;
-    for y in 0..g.board.height() {
-        win.mv(i32::from(y + OFFSET_Y), i32::from(OFFSET_X));
+fn draw_board(win: &Window, board: &Board, x_pos: u8, y_pos: u8)
+{
+    let width = board.width() as usize;
+    for y in 0..board.height() {
+        win.mv(i32::from(y + y_pos), i32::from(x_pos));
         for x in 0..width {
-            let o = match g.board.map[x + y as usize * width].clone() {
+            let o = match board.map[x + y as usize * width].clone() {
                 PieceType::None => {
                     set_color(win, &PieceType::None);
                     '.'
@@ -178,10 +185,24 @@ pub fn draw_in_win(g: &Game, win: &Window) {
             win.addch(o);
         }
     }
+}
+
+fn draw_next_piece(g: &Game, win: &Window, width: u8) {
+    let mut piece_board = Board::new(4, 4);
+    piece_board.draw(&g.next_piece, 2, 2);
+    draw_board(&win, &piece_board, width*2+OFFSET_X+PIECE_OFFSET_X, 1+OFFSET_Y+PIECE_OFFSET_Y);
+}
+
+// Move to different place.
+pub fn draw_in_win(g: &Game, win: &Window) {
+
+    let width = g.board.width();
+    draw_board(&win, &g.board, OFFSET_X, OFFSET_Y);
 
     win.color_set(8);
-    draw_lines(g, win, width as u8);
-    draw_score(g, win, width as u8);
+    draw_lines(g, win, width);
+    draw_score(g, win, width);
+    draw_next_piece(g, win, width);
 }
 
 /// Ends the GUI.
