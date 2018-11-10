@@ -1,8 +1,8 @@
 extern crate pancurses;
 
+use crate::model::Board;
 use crate::model::Game;
 use crate::model::PieceType;
-use crate::model::Board;
 use pancurses::Window;
 
 const OFFSET_X: u8 = 2;
@@ -44,8 +44,7 @@ fn init_colours() {
     pancurses::init_pair(8, pancurses::COLOR_YELLOW, pancurses::COLOR_BLACK);
 }
 
-fn add_line(win: &Window)
-{
+fn add_line(win: &Window) {
     // Should really use a width parameter.
     win.addstr("+--------+");
 }
@@ -165,8 +164,7 @@ fn set_color(win: &Window, c: &PieceType) {
     win.color_set(cp);
 }
 
-fn draw_board(win: &Window, board: &Board, x_pos: u8, y_pos: u8)
-{
+fn draw_board(win: &Window, board: &Board, x_pos: u8, y_pos: u8) {
     let width = board.width() as usize;
     for y in 0..board.height() {
         win.mv(i32::from(y + y_pos), i32::from(x_pos));
@@ -190,12 +188,16 @@ fn draw_board(win: &Window, board: &Board, x_pos: u8, y_pos: u8)
 fn draw_next_piece(g: &Game, win: &Window, width: u8) {
     let mut piece_board = Board::new(4, 4);
     piece_board.draw(&g.next_piece, 2, 2);
-    draw_board(&win, &piece_board, width*2+OFFSET_X+PIECE_OFFSET_X, 1+OFFSET_Y+PIECE_OFFSET_Y);
+    draw_board(
+        &win,
+        &piece_board,
+        width * 2 + OFFSET_X + PIECE_OFFSET_X,
+        1 + OFFSET_Y + PIECE_OFFSET_Y,
+    );
 }
 
 // Move to different place.
 pub fn draw_in_win(g: &Game, win: &Window) {
-
     let width = g.board.width();
     draw_board(&win, &g.board, OFFSET_X, OFFSET_Y);
 
