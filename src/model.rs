@@ -7,7 +7,45 @@ pub struct Tetramino {
     shape: [bool; 16],
     /// x, y
     offset: (i8, i8),
+    /// width, height
     size: (u8, u8),
+}
+
+#[derive(Clone)]
+pub enum PieceType {
+    None,
+    I,
+    J,
+    L,
+    O,
+    S,
+    T,
+    Z,
+}
+
+#[derive(Clone)]
+pub struct Piece {
+    tetraminos: Vec<Tetramino>,
+    index: u8,
+    pub piece_type: PieceType,
+}
+
+pub struct Board {
+    pub map: Vec<PieceType>,
+    /// width, height
+    pub size: (u8, u8),
+}
+
+pub struct Game {
+    pub board: Board,
+    pub piece: Piece,
+    pub next_piece: Piece,
+    piece_factory: PieceFactory,
+    pub score: u32,
+    pub lines: u16,
+    pub pos: (i8, i8),
+    pub last_tetris: bool,
+    pub game_over: bool,
 }
 
 impl Tetramino {
@@ -49,25 +87,6 @@ impl Tetramino {
     }
 }
 
-#[derive(Clone)]
-pub enum PieceType {
-    None,
-    I,
-    J,
-    L,
-    O,
-    S,
-    T,
-    Z,
-}
-
-#[derive(Clone)]
-pub struct Piece {
-    tetraminos: Vec<Tetramino>,
-    index: u8,
-    pub piece_type: PieceType,
-}
-
 impl Piece {
     fn new(t: Vec<Tetramino>, pt: PieceType) -> Self {
         let mut t2: Vec<Tetramino> = vec![];
@@ -100,11 +119,6 @@ impl Piece {
             self.index - 1
         }
     }
-}
-
-pub struct Board {
-    pub map: Vec<PieceType>,
-    pub size: (u8, u8),
 }
 
 impl Board {
@@ -333,17 +347,6 @@ impl PieceFactory {
     }
 }
 
-pub struct Game {
-    pub board: Board,
-    pub piece: Piece,
-    pub next_piece: Piece,
-    piece_factory: PieceFactory,
-    pub score: u32,
-    pub lines: u16,
-    pub pos: (i8, i8),
-    pub last_tetris: bool,
-}
-
 impl Game {
     pub fn new(board: Board, piece_factory: PieceFactory) -> Game {
         let w = board.width() as i8;
@@ -358,6 +361,7 @@ impl Game {
             lines: 0,
             pos: (w / 2, h),
             last_tetris: false,
+            game_over: false,
         }
     }
 
@@ -391,6 +395,9 @@ impl Game {
             self.board.width() as i8 / 2 as i8,
             self.piece.curr().offset.1,
         );
+        if !self.fits() {
+            self.game_over = true;
+        }
         v
     }
 }

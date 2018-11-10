@@ -50,7 +50,9 @@ fn down(g: &mut Game) {
         // FIXME:
         g.piece_stuck();
     }
-    g.draw();
+    if !g.game_over {
+        g.draw();
+    }
 }
 
 fn fall(g: &mut Game) {
@@ -60,7 +62,6 @@ fn fall(g: &mut Game) {
     }
     g.pos.1 -= 1;
     g.draw();
-    // FIXME:
     g.piece_stuck();
     g.draw();
 }
@@ -70,7 +71,7 @@ fn game_loop(win: &Window, g: &mut Game) {
 
     g.draw();
     let mut now = time::Instant::now();
-    loop {
+    while !g.game_over {
         match win.getch() {
             Some(pancurses::Input::Character(c)) => match c {
                 'q' => return,
@@ -99,13 +100,15 @@ fn game_loop(win: &Window, g: &mut Game) {
         }
         view::draw_in_win(g, win);
     }
+    while win.getch() != Some(pancurses::Input::Character('q')) {
+        thread::sleep(time::Duration::from_millis(200));
+    }
 }
 
 /// The entry point.
 fn main() {
     const WIDTH: u8 = 10;
     const HEIGHT: u8 = 20;
-    println!("Hello, world!");
     let win = view::init(WIDTH, HEIGHT);
 
     let piece_factory = PieceFactory::new();
