@@ -5,5 +5,9 @@ authors = ["Sebastian Andersson <sebastian@bittr.nu>"]
 edition = "2018"
 
 [dependencies]
-rand = "0.3.*"
-pancurses = "0.8.*"
+rand = "0.6.*"
+pancurses = "0.16.*"
+
+[profile.release]
+debug = true
+
