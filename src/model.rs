@@ -412,10 +412,10 @@ mod tests {
         let p = crate::model::get_pieces();
         p[1].clone()
         /*
-        ::Piece::new(vec![::Tetramino::new("XXXX", 2, 0),
-                          ::Tetramino::new("X...X...X...X...", 0, 2)],
-                     ::PieceType::I)
-*/
+                ::Piece::new(vec![::Tetramino::new("XXXX", 2, 0),
+                                  ::Tetramino::new("X...X...X...X...", 0, 2)],
+                             ::PieceType::I)
+        */
     }
 
     fn get_i() -> Tetramino {
@@ -492,7 +492,7 @@ mod tests {
         b.print();
 
         for y in 1..b.height() {
-            assert_empty_line(&b, y as i32);
+            assert_empty_line(&b, i32::from(y));
         }
         for x in 0..3 {
             assert!(!b.is_set(x as i8, 0 as i8));
@@ -505,7 +505,7 @@ mod tests {
         }
         b.clear(&i, 5 as i8, 0 as i8);
         for y in 0..b.height() {
-            assert_empty_line(&b, y as i32);
+            assert_empty_line(&b, i32::from(y));
         }
     }
 
