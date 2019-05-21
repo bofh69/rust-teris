@@ -10,4 +10,3 @@ pancurses = "0.16.*"
 
 [profile.release]
 debug = true
-
