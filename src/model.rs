@@ -581,5 +581,4 @@ mod tests {
         g.piece_stuck();
         g.board.print();
     }
-
 }
