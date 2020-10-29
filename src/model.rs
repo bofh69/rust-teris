@@ -192,10 +192,7 @@ impl Board {
     }
 
     pub fn is_set(&self, x: i8, y: i8) -> bool {
-        match self.map[x as usize + y as usize * self.width() as usize] {
-            PieceType::None => false,
-            _ => true,
-        }
+        !matches!(self.map[x as usize + y as usize * self.width() as usize], PieceType::None)
     }
 
     fn is_line_full(&self, y: i8) -> bool {
