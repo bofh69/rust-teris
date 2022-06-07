@@ -6,7 +6,7 @@ edition = "2018"
 
 [dependencies]
 rand = "0.7.*"
-pancurses = "0.16.*"
+pancurses = "*"
 
 [profile.release]
 debug = true
