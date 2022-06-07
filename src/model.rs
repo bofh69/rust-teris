@@ -50,7 +50,7 @@ pub struct Game {
 
 impl Tetramino {
     fn is_set(&self, x: i8, y: i8) -> bool {
-        if x < 0 || x > 3 || y < 0 || y > 3 {
+        if !(0..=3).contains(&x) || y < 0 || y > 3 {
             return false;
         }
         self.shape[(x + y * 4) as usize]
@@ -70,7 +70,7 @@ impl Tetramino {
             for x in 1..5 {
                 if let Some(c) = s.next() {
                     if c == 'X' {
-                        v[x + y * 4 - 5 as usize] = true;
+                        v[x + y * 4 - 5_usize] = true;
                         height = y as u8;
                         if x as u8 > width {
                             width = x as u8;
@@ -244,7 +244,7 @@ impl Board {
         // with the new, two lines are removed.
         let mut lines = 0;
         let mut v: Vec<i8> = vec![];
-        let mut ry = self.height() as i8 - 1 as i8;
+        let mut ry = self.height() as i8 - 1_i8;
         while ry >= 0 {
             if self.is_line_full(ry) {
                 v.push(ry - lines);
@@ -391,10 +391,7 @@ impl Game {
         self.score += 1 + 10 * ((v.len() * v.len()) as u32);
         self.piece = self.next_piece.clone();
         self.next_piece = self.piece_factory.next();
-        self.pos = (
-            self.board.width() as i8 / 2 as i8,
-            self.piece.curr().offset.1,
-        );
+        self.pos = (self.board.width() as i8 / 2_i8, self.piece.curr().offset.1);
         if !self.fits() {
             self.game_over = true;
         }
@@ -457,16 +454,16 @@ mod tests {
     #[test]
     fn tet_is_set() {
         let i = get_i();
-        assert_eq!(i.is_set(0, 0), true);
-        assert_eq!(i.is_set(3, 0), true);
-        assert_eq!(i.is_set(0, 1), false);
-        assert_eq!(i.is_set(3, 3), false);
+        assert!(i.is_set(0, 0));
+        assert!(i.is_set(3, 0));
+        assert!(!i.is_set(0, 1));
+        assert!(!i.is_set(3, 3));
 
         let i = get_rotated_i();
-        assert_eq!(i.is_set(0, 0), true);
-        assert_eq!(i.is_set(0, 1), true);
-        assert_eq!(i.is_set(1, 0), false);
-        assert_eq!(i.is_set(3, 3), false);
+        assert!(i.is_set(0, 0));
+        assert!(i.is_set(0, 1));
+        assert!(!i.is_set(1, 0));
+        assert!(!i.is_set(3, 3));
     }
 
     #[test]
@@ -495,15 +492,15 @@ mod tests {
             assert_empty_line(&b, i32::from(y));
         }
         for x in 0..3 {
-            assert!(!b.is_set(x as i8, 0 as i8));
+            assert!(!b.is_set(x as i8, 0_i8));
         }
         for x in 3..7 {
-            assert!(b.is_set(x as i8, 0 as i8));
+            assert!(b.is_set(x as i8, 0_i8));
         }
         for x in 7..b.width() {
-            assert!(!b.is_set(x as i8, 0 as i8));
+            assert!(!b.is_set(x as i8, 0_i8));
         }
-        b.clear(&i, 5 as i8, 0 as i8);
+        b.clear(&i, 5_i8, 0_i8);
         for y in 0..b.height() {
             assert_empty_line(&b, i32::from(y));
         }
@@ -548,8 +545,8 @@ mod tests {
         b.print();
 
         assert_eq!(l.len(), 2);
-        assert!(l.contains(&(9 as i8)));
-        assert!(l.contains(&(7 as i8)));
+        assert!(l.contains(&9_i8));
+        assert!(l.contains(&7_i8));
 
         let l = b.remove_full_lines();
         assert_eq!(l.len(), 0);

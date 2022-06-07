@@ -189,7 +189,7 @@ fn draw_next_piece(g: &Game, win: &Window, width: u8) {
     let mut piece_board = Board::new(4, 4);
     piece_board.draw(&g.next_piece, 2, 2);
     draw_board(
-        &win,
+        win,
         &piece_board,
         width * 2 + OFFSET_X + PIECE_OFFSET_X,
         1 + OFFSET_Y + PIECE_OFFSET_Y,
@@ -199,7 +199,7 @@ fn draw_next_piece(g: &Game, win: &Window, width: u8) {
 // Move to different place.
 pub fn draw_in_win(g: &Game, win: &Window) {
     let width = g.board.width();
-    draw_board(&win, &g.board, OFFSET_X, OFFSET_Y);
+    draw_board(win, &g.board, OFFSET_X, OFFSET_Y);
 
     win.color_set(8);
     draw_lines(g, win, width);
