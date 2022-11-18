@@ -9,7 +9,7 @@ authors = ["Sebastian Andersson <sebastian@bittr.nu>"]
 edition = "2018"
 
 [dependencies]
-rand = "0.7.*"
+rand = "0.8.*"
 pancurses = "*"
 
 [profile.release]

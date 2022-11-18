@@ -345,7 +345,7 @@ impl PieceFactory {
     }
 
     pub fn next(&self) -> Piece {
-        let i = rand::thread_rng().gen_range(0, self.pieces.len());
+        let i = rand::thread_rng().gen_range(0..self.pieces.len());
         let p = &self.pieces[i];
         p.clone()
     }
