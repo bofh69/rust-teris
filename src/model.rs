@@ -54,7 +54,7 @@ pub struct Game {
 
 impl Tetramino {
     fn is_set(&self, x: i8, y: i8) -> bool {
-        if !(0..=3).contains(&x) || y < 0 || y > 3 {
+        if !(0..=3).contains(&x) || !(0..=3).contains(&y) {
             return false;
         }
         self.shape[(x + y * 4) as usize]
