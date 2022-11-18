@@ -6,7 +6,7 @@
 name = "tetris"
 version = "0.1.0"
 authors = ["Sebastian Andersson <sebastian@bittr.nu>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 rand = "0.8.*"
