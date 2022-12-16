@@ -142,7 +142,7 @@ fn draw_lines(g: &Game, win: &Window, width: u8) {
         i32::from(width * 2u8 + OFFSET_X + LINES_OFFSET_X + 1),
     );
     let lines = g.lines.to_string();
-    win.addstr(&lines);
+    win.addstr(lines);
 }
 
 fn draw_score(g: &Game, win: &Window, width: u8) {
@@ -151,7 +151,7 @@ fn draw_score(g: &Game, win: &Window, width: u8) {
         i32::from(width * 2u8 + OFFSET_X + SCORE_OFFSET_X + 1),
     );
     let score = g.score.to_string();
-    win.addstr(&score);
+    win.addstr(score);
 }
 
 fn set_color(win: &Window, c: &PieceType) {
