@@ -7,6 +7,7 @@ name = "tetris"
 version = "0.1.0"
 authors = ["Sebastian Andersson <sebastian@bittr.nu>"]
 edition = "2021"
+rust-version = "1.56.1"
 
 [dependencies]
 rand = "0.8.*"
