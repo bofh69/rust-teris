@@ -2,8 +2,6 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-extern crate pancurses;
-
 use crate::model::Board;
 use crate::model::Game;
 use crate::model::PieceType;

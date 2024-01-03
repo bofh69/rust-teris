@@ -2,8 +2,7 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-extern crate pancurses;
-extern crate rand;
+#![forbid(unsafe_code)]
 
 use pancurses::Window;
 
