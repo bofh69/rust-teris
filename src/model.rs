@@ -46,7 +46,6 @@ pub struct Game {
     pub score: u32,
     pub lines: u16,
     pub pos: (i8, i8),
-    pub last_tetris: bool,
     pub game_over: bool,
 }
 
@@ -362,7 +361,6 @@ impl Game {
             score: 0,
             lines: 0,
             pos: (w / 2, h),
-            last_tetris: false,
             game_over: false,
         }
     }
